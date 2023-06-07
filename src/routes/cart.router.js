@@ -8,10 +8,10 @@ const cartRouter = express.Router();
 cartRouter.get('/:cartId', async (req,res)=>{
   const cartId = req.params.cartId
   try{
-    let cart = await cartModel.findOne({"_id": cartId}).lean().populate("productsInCart.productId","productId")
-    console.log(cart)
+    let cart = await cartModel.find({_id: cartId}).populate("productsInCart.productId").lean()
+    result = cart.productsInCart.map(product => {product.productId, product.quantity})
     cart.titulo="Cart encontrado"
-    res.status(200).render("cart",cart)
+    res.status(200).json({cart})
   }catch(error){
     console.log("Can't get carts with Mongoose "+error)
   }
